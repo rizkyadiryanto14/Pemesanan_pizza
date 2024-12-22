@@ -44,6 +44,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * This class object is the super class that every library in
  * CodeIgniter will be assigned to.
  *
+ * @property $form_validation
+ * @property $input
+ * @property $session
  * @package		CodeIgniter
  * @subpackage	Libraries
  * @category	Libraries

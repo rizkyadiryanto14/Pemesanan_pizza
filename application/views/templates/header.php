@@ -5,6 +5,10 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Pizza Chitia</title>
 
+	<!-- Favicons -->
+	<link href="<?= base_url() ?>assets/images/pizza_chita.png" rel="icon">
+	<link href="<?= base_url() ?>assets/images/pizza_chita.png" rel="apple-touch-icon">
+
 	<!-- Google Font: Source Sans Pro -->
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
 	<!-- Font Awesome -->
@@ -25,6 +29,9 @@
 	<link rel="stylesheet" href="<?= base_url() ?>assets/plugins/daterangepicker/daterangepicker.css">
 	<!-- summernote -->
 	<link rel="stylesheet" href="<?= base_url() ?>assets/plugins/summernote/summernote-bs4.min.css">
+
+	<!--datatables-->
+	<link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css" />
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">

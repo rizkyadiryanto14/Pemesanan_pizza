@@ -49,14 +49,47 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | Examples:	my-controller/index	-> my_controller/index
 |		my-controller/my-method	-> my_controller/my_method
 */
-$route['default_controller'] = 'Auth';
+
+$route['default_controller'] = 'Home';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
-$route['login'] = 'Auth/login';
+$route['login'] 									= 'Auth/login';
+$route['logout'] 									= 'Auth/logout';
+$route['register'] 									= 'Auth/register';
+$route['user/register'] 							= 'Auth/store';
+$route['dashboard'] 								= 'Backend/Dashboard';
 
-$route['logout'] = 'Auth/logout';
+//admin
+$route['admin/list_produk'] 						= 'Backend/Produk';
+$route['admin/tambah_produk'] 						= 'Backend/Produk/insert';
+$route['admin/get_data_produk'] 					= 'Backend/Produk/get_data_produk';
+$route['admin/store_produk'] 						= 'Backend/Produk/store';
 
-$route['dashboard'] = 'Backend/Dashboard';
+//admin-bahan baku
+$route['admin/list_bahan']							= 'Backend/BahanBaku';
+$route['admin/store_bahan']							= 'Backend/BahanBaku/store';
+$route['admin/get_data_bahanbaku'] 					= 'Backend/BahanBaku/get_data_bahanbaku';
+$route['admin/tambah_bahan_baku'] 					= 'Backend/BahanBaku/store';
 
+//admin-kategori produk
+$route['admin/list_kategori']						= 'Backend/Kategori_produk';
+$route['admin/store_kategori']						= 'Backend/Kategori_produk/insert';
+$route['admin/get_data_kategori'] 					= 'Backend/Kategori_produk/get_data_kategori';
+
+//admin - transaksi
+$route['admin/list_transaksi']						= 'Backend/Transaksi';
+$route['admin/update_status_sedang/(:num)']			= 'Backend/Transaksi/update_status_sedang/$1';
+$route['admin/update_status_sudah/(:num)']			= 'Backend/Transaksi/update_status_sudah/$1';
+$route['admin/update_status_pesanan_dibuat/(:num)'] = 'Backend/Transaksi/update_status_pesanan_dibuat/$1';
+$route['admin/update_status_pesanan_diantar/(:num)']= 'Backend/Transaksi/update_status_pesanan_diantar/$1';
+
+//user-pesanan
+$route['user/pesanan']								= 'Backend/Pesanan';
+$route['user/pesan_sekarang/(:num)']				= 'Backend/Pesanan/insert/$1';
+
+//user-transaksi
+$route['user/list_transaksi']						= 'Backend/Transaksi';
+$route['user/transaksi']							= 'Backend/Transaksi/insert';
+$route['user/get_data_transaksi']					= 'Backend/Transaksi/get_data_transaksi';
 
