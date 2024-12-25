@@ -3,7 +3,7 @@
 	<!-- Brand Logo -->
 	<a href="<?= base_url() ?>" class="brand-link">
 		<img src="<?= base_url() ?>assets/images/pizza_chita.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-		<span class="brand-text font-weight-light">Pemesanan KFC</span>
+		<span class="brand-text font-weight-light">Pizza Chita</span>
 	</a>
 
 	<!-- Sidebar -->
@@ -20,46 +20,104 @@
 
 		<!-- Sidebar Menu -->
 		<nav class="mt-2">
+			<?php if ($this->session->userdata('role') == '1') { ?>
 			<ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-				<li class="nav-item menu-open">
-					<a href="#" class="nav-link active">
+				<li class="nav-item">
+					<a href="<?= base_url('dashboard') ?>" class="nav-link">
 						<i class="nav-icon fas fa-tachometer-alt"></i>
 						<p>
 							Dashboard
+						</p>
+					</a>
+				</li>
+				<li class="nav-item">
+					<a href="#" class="nav-link ">
+						<i class="nav-icon fas fa-home"></i>
+						<p>
+							Master Data
 							<i class="right fas fa-angle-left"></i>
 						</p>
 					</a>
 					<ul class="nav nav-treeview">
 						<li class="nav-item">
-							<a href="./index.html" class="nav-link active">
-								<i class="far fa-circle nav-icon"></i>
-								<p>Dashboard v1</p>
+							<a href="<?= base_url('admin/list_produk') ?>" class="nav-link">
+								<i class="fas fa-cutlery nav-icon"></i>
+								<p>Produk</p>
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="./index2.html" class="nav-link">
-								<i class="far fa-circle nav-icon"></i>
-								<p>Dashboard v2</p>
+							<a href="<?= base_url('admin/list_kategori') ?>" class="nav-link">
+								<i class="fas fa-adversal nav-icon"></i>
+								<p>Kategori Produk</p>
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="./index3.html" class="nav-link">
-								<i class="far fa-circle nav-icon"></i>
-								<p>Dashboard v3</p>
+							<a href="<?= base_url('admin/list_bahan') ?>" class="nav-link">
+								<i class="fas fa-file-video-o nav-icon"></i>
+								<p>Bahan Baku</p>
 							</a>
 						</li>
 					</ul>
 				</li>
 				<li class="nav-item">
-					<a href="pages/widgets.html" class="nav-link">
-						<i class="nav-icon fas fa-th"></i>
+					<a href="<?= base_url('admin/list_transaksi') ?>" class="nav-link">
+						<i class="nav-icon fas fa-cog nav-icon"></i>
 						<p>
-							Widgets
-							<span class="right badge badge-danger">New</span>
+							Transaksi
+						</p>
+					</a>
+				</li>
+				<li class="nav-item">
+					<a href="#" class="nav-link">
+						<i class="nav-icon fas fa-shopping-basket nav-icon"></i>
+						<p>
+							Pesanan
+						</p>
+					</a>
+				</li>
+				<li class="nav-item">
+					<a href="#" class="nav-link">
+						<i class="nav-icon fas fa-file nav-icon"></i>
+						<p>
+							Laporan
+						</p>
+					</a>
+				</li>
+				<li class="nav-item">
+					<a href="#" class="nav-link">
+						<i class="nav-icon fas fa-cog"></i>
+						<p>
+							Pengaturan
 						</p>
 					</a>
 				</li>
 			</ul>
+			<?php }elseif ($this->session->userdata('role') == '2') { ?>
+			<ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+				<li class="nav-item">
+					<a href="<?= base_url('dashboard') ?>" class="nav-link">
+						<i class="nav-icon fas fa-tachometer-alt"></i>
+						<p>
+							Dashboard
+						</p>
+					</a>
+				</li>
+				<li class="nav-item">
+					<a href="<?= base_url('user/pesanan') ?>" class="nav-link">
+						<i class="fas fa-table nav-icon"></i>
+						<p>Pesan Sekarang</p>
+					</a>
+				</li>
+				<li class="nav-item">
+					<a href="<?= base_url('user/list_transaksi') ?>" class="nav-link">
+						<i class="fas fa-table nav-icon"></i>
+						<p>Transaksi</p>
+					</a>
+				</li>
+			</ul>
+			<?php } else { ?>
+				Anda Tidak Memiliki Akses
+			<?php } ?>
 		</nav>
 		<!-- /.sidebar-menu -->
 	</div>

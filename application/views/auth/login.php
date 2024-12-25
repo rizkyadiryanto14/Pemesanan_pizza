@@ -7,7 +7,7 @@
 					<div class="col-12 col-md-6 text-center mt-3 mx-auto p-3">
 						<img src="<?= base_url('assets/images/pizza_chita.png') ?>" width="35%" class="mb-4" alt="" />
 						<br>
-						<h1 class="h2" style="font-size: 28px;">Pemesanan KFC</h1>
+						<h1 class="h2" style="font-size: 28px;">Pizza Chita</h1>
 						<p class="lead">Masuk untuk mendapat akses ke sistem.</p>
 					</div>
 				</div>
@@ -41,12 +41,13 @@
 									LOGIN
 									<i class="fa fa-arrow-alt-circle-right"></i>
 								</button>
-								<div class="back-to-landing mt-2">
-									<a href="<?= base_url('Landing') ?>">
-										<i class="fas fa-arrow-left"></i>
-										Back to landing
-									</a>
-								</div>
+								Belum Memiliki Akun? <a href="<?= base_url('register') ?>">Register</a>
+							</div>
+							<div class="back-to-landing mt-2">
+								<a href="<?= base_url('Home') ?>">
+									<i class="fas fa-arrow-left"></i>
+									Back to landing
+								</a>
 							</div>
 						</form>
 					</div>

@@ -41,6 +41,9 @@
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <script src="<?= base_url() ?>assets/dist/js/pages/dashboard.js"></script>
 
+<!--datatables-->
+<script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <?php if ($this->session->flashdata('success')) : ?>
