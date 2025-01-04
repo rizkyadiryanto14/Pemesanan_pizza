@@ -16,6 +16,12 @@ class BahanBaku_model extends CI_Model
 		return $this->db->get_where('bahan_baku', ['id_bahan_baku' => $id])->row_array();
 	}
 
+	public function get_bahan_by_id($id_bahan)
+	{
+		$this->db->where('id_bahan_baku', $id_bahan);
+		return $this->db->get('bahan_baku')->row();
+	}
+
 	public function insert($data)
 	{
 		return $this->db->insert('bahan_baku', $data);

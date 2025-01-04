@@ -16,10 +16,22 @@ class Kategori_model extends CI_Model
 		return $this->db->insert('kategori_produk', $data);
 	}
 
+	public function get_kategori_by_id($id_kategori)
+	{
+		$this->db->where('id_kategori', $id_kategori);
+		return $this->db->get('kategori_produk')->row();
+	}
+
 	public function update($id, $data)
 	{
 		$this->db->where('id_kategori', $id);
 		return $this->db->update('kategori_produk', $data);
+	}
+
+	public function delete($id_kategori)
+	{
+		$this->db->where('id_kategori', $id_kategori);
+		return $this->db->delete('kategori_produk');
 	}
 
 

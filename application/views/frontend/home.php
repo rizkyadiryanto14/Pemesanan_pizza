@@ -27,6 +27,16 @@
 	<!-- Main CSS File -->
 	<link href="<?= base_url() ?>assets/css/main.css" rel="stylesheet">
 
+	<style>
+		.custom-image {
+			width: 100%;
+			height: 200px;
+			object-fit: cover;
+			border-radius: 8px;
+		}
+
+	</style>
+
 </head>
 <!--End File Header-->
 
@@ -48,6 +58,7 @@
 					<li><a href="#menu">Menu</a></li>
 					<li><a href="#gallery">Galeri</a></li>
 					<li><a href="#contact">Kontak</a></li>
+					<li><a href="<?= base_url('Auth') ?>">Mulai</a></li>
 				</ul>
 				<i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
 			</nav>
@@ -195,13 +206,13 @@
 		<div class="container-fluid" data-aos="fade-up" data-aos-delay="100">
 			<div class="row g-0">
 				<?php foreach ($produk as $item) { ?>
-				<div class="col-lg-3 col-md-4">
-					<div class="gallery-item">
-						<a href="<?= base_url($item->gambar_produk) ?>" class="glightbox" data-gallery="images-gallery">
-							<img src="<?= base_url($item->gambar_produk) ?>" alt="" class="img-fluid">
-						</a>
-					</div>
-				</div><!-- End Gallery Item -->
+					<div class="col-lg-3 col-md-4">
+						<div class="gallery-item">
+							<a href="<?= base_url($item->gambar_produk) ?>" class="glightbox" data-gallery="images-gallery">
+								<img src="<?= base_url($item->gambar_produk) ?>" alt="" class="img-fluid custom-image">
+							</a>
+						</div>
+					</div><!-- End Gallery Item -->
 				<?php } ?>
 			</div>
 		</div>
