@@ -11,16 +11,47 @@ class Transaksi_model extends CI_Model
 		return $this->db->insert('transaksi', $data);
 	}
 
+
 	public function getByIdTransaksi($id_transaksi)
 	{
 		return $this->db->get_where('transaksi', ['id_transaksi' => $id_transaksi])->row_array();
 	}
+
+	public function check_review_exists($id_transaksi, $id_user = null)
+	{
+		$this->db->where('id_transaksi', $id_transaksi);
+
+		// Jika $id_user tidak null, tambahkan ke kondisi
+		if ($id_user !== null) {
+			$this->db->where('id_user', $id_user);
+		}
+
+		$query = $this->db->get('reviews');
+		return $query->num_rows() > 0; // True jika ulasan ada
+	}
+
+
 
 	public function update($id_transaksi, $data)
 	{
 		$this->db->where('id_transaksi', $id_transaksi);
 		return $this->db->update('transaksi', $data);
 	}
+
+	public function insert_review($data)
+	{
+		$this->db->insert('reviews', $data);
+	}
+
+	public function get_all_reviews()
+	{
+		$this->db->select('reviews.*, produk.nama_produk, users.username');
+		$this->db->from('reviews');
+		$this->db->join('produk', 'produk.id_produk = reviews.id_produk', 'left');
+		$this->db->join('users', 'users.id_users = reviews.id_user', 'left');
+		return $this->db->get()->result();
+	}
+
 
 	function make_query():void
 	{

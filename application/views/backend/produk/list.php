@@ -40,6 +40,7 @@
 								<th>Nama Kategori</th>
 								<th>Bahan Baku</th>
 								<th>Stok</th>
+								<th>Gambar</th>
 								<th>Harga</th>
 								<th>Keterangan Produk</th>
 								<th>Waktu</th>

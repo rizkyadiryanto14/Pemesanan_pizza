@@ -83,9 +83,63 @@
 	</div>
 </div>
 
+<div class="modal fade" id="edit-modal" tabindex="-1" role="dialog">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Edit Kategori Produk</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<form action="<?= base_url('admin/update_bahan') ?>" method="post">
+				<div class="modal-body">
+					<input type="hidden" name="id_bahan_baku" id="edit-id-bahan_baku">
+					<div class="form-group">
+						<label for="edit-nama-bahan">Nama Bahan</label>
+						<input type="text" name="nama_bahan" id="edit-nama-bahan" class="form-control">
+					</div>
+					<div class="form-group">
+						<label for="edit-stok-bahan">Stok Bahan</label>
+						<input type="text" name="stok_bahan" id="edit-stok-bahan" class="form-control">
+					</div>
+					<div class="form-group">
+						<label for="edit-keterangan">Keterangan</label>
+						<input type="text" name="keterangan" id="edit-keterangan" class="form-control">
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					<button type="submit" class="btn btn-primary">Update</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
 <script>
+
+	$(document).on('click', '.update-bahan', function () {
+		var id_bahan_baku = $(this).data('id');
+
+		$.ajax({
+			url: "<?php echo site_url('admin/get_bahan_by_id'); ?>",
+			type: "POST",
+			data: {id_bahan_baku: id_bahan_baku},
+			dataType: "json",
+			success: function (data) {
+				// Populate modal fields
+				$('#edit-id-bahan_baku').val(data.id_bahan_baku);
+				$('#edit-nama-bahan').val(data.nama_bahan);
+				$('#edit-stok-bahan').val(data.stok_bahan);
+				$('#edit-keterangan').val(data.keterangan);
+			}
+		});
+	})
+
 	$(document).ready(function () {
 		var dataTable = $('#bahanbaku').DataTable({
 			"processing": true,

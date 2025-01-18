@@ -67,30 +67,6 @@
 						</p>
 					</a>
 				</li>
-				<li class="nav-item">
-					<a href="#" class="nav-link">
-						<i class="nav-icon fas fa-shopping-basket nav-icon"></i>
-						<p>
-							Pesanan
-						</p>
-					</a>
-				</li>
-				<li class="nav-item">
-					<a href="#" class="nav-link">
-						<i class="nav-icon fas fa-file nav-icon"></i>
-						<p>
-							Laporan
-						</p>
-					</a>
-				</li>
-				<li class="nav-item">
-					<a href="#" class="nav-link">
-						<i class="nav-icon fas fa-cog"></i>
-						<p>
-							Pengaturan
-						</p>
-					</a>
-				</li>
 			</ul>
 			<?php }elseif ($this->session->userdata('role') == '2') { ?>
 			<ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">

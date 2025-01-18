@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @author Rizky Adi Ryanto
+ * @link github.com/rizkyadiryanto14
+ *
+ * Controller Transaksi bertanggung jawab atas pengelolaan transaksi dalam aplikasi, termasuk fitur seperti manajemen status transaksi, upload bukti pembayaran, ulasan produk, dan lainnya.
+ *
  * @property $Transaksi_model
  * @property $Produk_model
  * @property $upload
@@ -30,7 +35,7 @@ class Transaksi extends CI_Controller
 	{
 		$config['upload_path'] = './uploads/bukti_bayar/';
 		$config['allowed_types'] = 'gif|jpg|png';
-		$config['max_size'] = 2048;
+		$config['max_size'] = 8192;
 		$config['encrypt_name'] = TRUE;
 
 		$this->load->library('upload', $config);
@@ -71,6 +76,31 @@ class Transaksi extends CI_Controller
 		redirect(base_url('user/pesanan'));
 	}
 
+	public function get_reviews(): void
+	{
+		$this->load->model('Transaksi_model');
+		$reviews = $this->Transaksi_model->get_all_reviews();
+		echo json_encode($reviews);
+	}
+
+
+	public function submit_review(): void
+	{
+		$data = array(
+			'id_transaksi' => $this->input->post('id_transaksi'),
+			'id_produk' => $this->input->post('id_produk'),
+			'id_user' => $this->session->userdata('id_users'),
+			'review' => $this->input->post('review'),
+			'rating' => $this->input->post('rating'),
+		);
+
+		$this->load->model('Transaksi_model');
+		$this->Transaksi_model->insert_review($data);
+
+		echo json_encode(array('status' => 'success'));
+	}
+
+
 	public function get_data_transaksi(): void
 	{
 		$fetch_data = $this->Transaksi_model->make_datatables();
@@ -81,51 +111,79 @@ class Transaksi extends CI_Controller
 				$sub_array = array();
 				$sub_array[] = $no++;
 				$sub_array[] = $row->nama_produk;
-				$sub_array[] ='Rp.'. number_format($row->harga_produk);
+				$sub_array[] = 'Rp.' . number_format($row->harga_produk);
 				$sub_array[] = $row->qty;
 				$sub_array[] = 'Rp.' . number_format($row->total_harga);
 				$sub_array[] = '<a href="' . site_url($row->bukti_transaksi) . '" class="btn btn-info btn-xs update">Lihat File</a>';
+
+				// ini untuk Status transaksi
+				if ($row->status == 3) {
+					$sub_array[] = '<span class="btn btn-danger btn-xs">Belum Diverifikasi</span>';
+					if ($this->session->userdata('role') == 1) {
+						$sub_array[] = '<a href="' . site_url('admin/update_status_sedang/' . $row->id_transaksi) . '"  onclick="return confirm(\'Apakah anda yakin?\')"  class="btn btn-info btn-xs update">Sedang Ditinjau</a>
+                          <a href="' . site_url('admin/update_status_sudah/' . $row->id_transaksi) . '" onclick="return confirm(\'Apakah anda yakin?\')" class="btn btn-danger btn-xs delete">Sudah Diverifikasi</a>';
+					} else {
+						$sub_array[] = '<span class="btn btn-secondary btn-xs disabled">Belum Diverifikasi</span>';
+					}
+				} elseif ($row->status == 2) {
+					if ($this->session->userdata('role') == 1) {
+						$sub_array[] = '<a href="' . site_url('admin/update_status_sudah/' . $row->id_transaksi) . '" onclick="return confirm(\'Apakah anda yakin?\')" class="btn btn-success btn-xs delete">Sudah Diverifikasi</a>';
+					} else {
+						$sub_array[] = '<span class="btn btn-success btn-xs">Sedang Ditinjau</span>';
+					}
+				} elseif ($row->status == 1) {
+					$sub_array[] = '<span class="btn btn-success btn-xs"><i class="fas fa-check"></i> Sudah Diverifikasi</span>';
+				}
+
+				// sedangkan ini untuk Status pesanan
+				if ($row->status_pesanan == 0) {
+					if ($this->session->userdata('role') == 1) {
+						$sub_array[] = '<a href="' . site_url('admin/update_status_pesanan_dibuat/' . $row->id_transaksi) . '"  onclick="return confirm(\'Apakah anda yakin?\')"  class="btn btn-info btn-xs update">Sedang Dibuat</a>
+                          <a href="' . site_url('admin/update_status_pesanan_diantar/' . $row->id_transaksi) . '" onclick="return confirm(\'Apakah anda yakin?\')" class="btn btn-danger btn-xs delete">Dalam Pengantaran</a>';
+					} else {
+						$sub_array[] = '<span class="btn btn-secondary btn-xs disabled">Tidak dapat mengubah status pesanan</span>';
+					}
+				} elseif ($row->status_pesanan == 2) {
+					if ($this->session->userdata('role') == 1) {
+						$sub_array[] = '<a href="' . site_url('admin/update_status_pesanan_diantar/' . $row->id_transaksi) . '" onclick="return confirm(\'Apakah anda yakin?\')" class="btn btn-warning btn-xs delete">Dalam Pengantaran</a>';
+					} else {
+						$sub_array[] = '<span class="btn btn-warning btn-xs">Dalam Pengantaran</span>';
+					}
+				} elseif ($row->status_pesanan == 1) {
+					$sub_array[] = '<span class="btn btn-success btn-xs">Selesai</span>';
+				}
+
+
+				// Tambahkan kolom ulasan
 				if ($this->session->userdata('role') == 2) {
-					if ($row->status == 3) {
-						$sub_array[] = '<span class="btn btn-danger btn-xs delete">Belum Diverifikasi</span>';
-					}elseif ($row->status == 2) {
-						$sub_array[] = '<span class="btn btn-warning btn-xs update">Sedang Ditinjau</span>';
-					}elseif ($row->status == 1) {
-						$sub_array[] = '<span class="btn btn-success btn-xs update">Sudah Diverifikasi</span>';
+					if ($row->status_pesanan == 1) {
+						$review_exists = $this->Transaksi_model->check_review_exists($row->id_transaksi, $this->session->userdata('id_users'));
+
+						if ($review_exists) {
+							$sub_array[] = '<span class="btn btn-secondary btn-xs disabled">Ulasan Dikirim</span>';
+						} else {
+							$sub_array[] = '<button class="btn btn-success btn-xs btn-review" data-id-transaksi="' . $row->id_transaksi . '" data-id-produk="' . $row->id_produk . '">Beri Ulasan</button>';
+						}
+					} else {
+						$sub_array[] = '';
 					}
-				}elseif ($this->session->userdata('role') == 1) {
-					if ($row->status == 3) {
-						$sub_array[] = '<a href="' . site_url('admin/update_status/' . $row->id_transaksi) . '" onclick="return confirm(\'Apakah anda yakin?\')" class="btn btn-danger disabled btn-xs">Belum Diverifikasi</a>
-						<a href="' . site_url('admin/update_status_sedang/' . $row->id_transaksi) . '" onclick="return confirm(\'Apakah anda yakin?\')" class="btn btn-warning btn-xs">Sedang Diverifikasi</a>
-						<a href="' . site_url('admin/update_status_sudah/' . $row->id_transaksi) . '" onclick="return confirm(\'Apakah anda yakin?\')" class="btn btn-primary btn-xs">Sudah Diverifikasi</a>';
-					}elseif ($row->status == 2) {
-						$sub_array[] = '<a href="' . site_url('admin/update_status/' . $row->id_transaksi) . '" onclick="return confirm(\'Apakah anda yakin?\')" class="btn btn-warning disabled btn-xs">Sedang Diverifikasi</a>
-						<a href="' . site_url('admin/update_status_sudah/' . $row->id_transaksi) . '" onclick="return confirm(\'Apakah anda yakin?\')" class="btn btn-primary btn-xs delete">Sudah Diverifikasi</a>';
-					}elseif ($row->status == 1) {
-						$sub_array[] = '<a href="' . site_url('admin/update_status/' . $row->id_transaksi) . '" onclick="return confirm(\'Apakah anda yakin?\')" class="btn btn-primary disabled btn-xs">Sudah Diverifikasi</a>';
-					}
-				}
-				if ($this->session->userdata('role') == 1) {
-					if ($row->status_pesanan == 0) {
-						$sub_array[] = '<a href="' . site_url('admin/update_status_pesanan_dibuat/' . $row->id_transaksi) . '" onclick="return confirm(\'Apakah anda yakin?\')" class="btn btn-warning btn-xs">Sedang Dibuat</a>
-						<a href="' . site_url('admin/update_status_pesanan_diantar/' . $row->id_transaksi) . '" onclick="return confirm(\'Apakah anda yakin?\')" class="btn btn-primary btn-xs delete">Proses Pengataran</a>';
-					}elseif($row->status_pesanan == 2){
-						$sub_array[] = '<a href="' . site_url('admin/update_status_pesanan_diantar/' . $row->id_transaksi) . '" onclick="return confirm(\'Apakah anda yakin?\')" class="btn btn-success btn-xs">Proses Pengantaran</a>';
-					}elseif ($row->status_pesanan == 1) {
-						$sub_array[] = '<span class="btn btn-primary btn-xs delete">Dalam Proses Pengataran</span>';
-					}
-				}elseif ($this->session->userdata('role') == 2) {
-					if ($row->status_pesanan == 0) {
-						$sub_array[] = '<span class="btn btn-danger btn-xs delete">Proses Tinjau</span>';
-					}elseif ($row->status_pesanan == 2) {
-						$sub_array[] = '<span class="btn btn-warning btn-xs delete">Sedang Dibuat</span>';
-					}elseif ($row->status_pesanan == 1) {
-						$sub_array[] = '<span class="btn btn-primary btn-xs delete">Dalam Proses Pengataran</span>';
+				} elseif ($this->session->userdata('role') == 1) { // Admin
+					$review_exists = $this->Transaksi_model->check_review_exists($row->id_transaksi);
+
+					if ($review_exists) {
+						$sub_array[] = '<button class="btn btn-info btn-xs btn-view-review" data-id-transaksi="' . $row->id_transaksi . '">Lihat Ulasan</button>';
+					} else {
+						$sub_array[] = '<span class="btn btn-warning btn-xs">Belum Ada Ulasan</span>';
 					}
 				}
+
 				$sub_array[] = longdate_indo($row->created_at);
-				$sub_array[] = '<a href="' . site_url('#' . $row->id_transaksi) . '" class="btn btn-info btn-xs update"><i class="fa fa-edit"></i></a>
-                     <a href="' . site_url('#' . $row->id_transaksi) . '" onclick="return confirm(\'Apakah anda yakin?\')" class="btn btn-danger btn-xs delete"><i class="fa fa-trash"></i></a>';
+
+				if ($this->session->userdata('role') == 1) {
+					$sub_array[] = '<a href="' . site_url('#' . $row->id_transaksi) . '" class="btn btn-info btn-xs update"><i class="fa fa-edit"></i></a>
+            <a href="' . site_url('#' . $row->id_transaksi) . '" onclick="return confirm(\'Apakah anda yakin?\')" class="btn btn-danger btn-xs delete"><i class="fa fa-trash"></i></a>';
+				}
+
 				$data[] = $sub_array;
 			}
 

@@ -71,11 +71,17 @@ $route['admin/list_bahan']							= 'Backend/BahanBaku';
 $route['admin/store_bahan']							= 'Backend/BahanBaku/store';
 $route['admin/get_data_bahanbaku'] 					= 'Backend/BahanBaku/get_data_bahanbaku';
 $route['admin/tambah_bahan_baku'] 					= 'Backend/BahanBaku/store';
+$route['admin/get_bahan_by_id']						= 'Backend/BahanBaku/get_bahan_by_id';
+$route['admin/update_bahan']						= 'Backend/BahanBaku/update_bahan';
+$route['admin/delete_bahan/(:num)']					= 'Backend/BahanBaku/delete_bahan/$1';
 
 //admin-kategori produk
 $route['admin/list_kategori']						= 'Backend/Kategori_produk';
 $route['admin/store_kategori']						= 'Backend/Kategori_produk/insert';
 $route['admin/get_data_kategori'] 					= 'Backend/Kategori_produk/get_data_kategori';
+$route['admin/delete_kategori/(:num)']				= 'Backend/Kategori_produk/delete/$1';
+$route['admin/update_kategori']						= 'Backend/Kategori_produk/update';
+$route['admin/get_kategori_by_id']					= 'Backend/Kategori_produk/get_kategori_by_id';
 
 //admin - transaksi
 $route['admin/list_transaksi']						= 'Backend/Transaksi';
@@ -93,3 +99,8 @@ $route['user/list_transaksi']						= 'Backend/Transaksi';
 $route['user/transaksi']							= 'Backend/Transaksi/insert';
 $route['user/get_data_transaksi']					= 'Backend/Transaksi/get_data_transaksi';
 
+//user-reviews
+$route['user/submit_review']						= 'Backend/Transaksi/submit_review';
+
+//admin-reviews
+$route['admin/get_reviews']							= 'Backend/Transaksi/get_reviews';

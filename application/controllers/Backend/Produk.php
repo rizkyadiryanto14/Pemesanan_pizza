@@ -103,6 +103,9 @@ class Produk extends CI_Controller
 				$sub_array[] = $row->nama_kategori;
 				$sub_array[] = $row->nama_bahan;
 				$sub_array[] = $row->stok;
+				$sub_array[] = '<a href="' . site_url('#' . $row->id_produk) . '" class="btn btn-info btn-xs update">
+                   <img src="' . base_url($row->gambar_produk) . '" alt="Edit" style="width:70px; height:70px;">
+                </a>';
 				$sub_array[] = $row->harga;
 				$sub_array[] = $row->keterangan_produk;
 				$sub_array[] = longdate_indo($row->created_at);

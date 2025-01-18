@@ -78,9 +78,58 @@
 	</div>
 </div>
 
+<div class="modal fade" id="edit-modal" tabindex="-1" role="dialog">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Edit Kategori Produk</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<form action="<?= base_url('admin/update_kategori') ?>" method="post">
+				<div class="modal-body">
+					<input type="hidden" name="id_kategori" id="edit-id-kategori">
+					<div class="form-group">
+						<label for="edit-nama-kategori">Nama Kategori</label>
+						<input type="text" name="nama_kategori" id="edit-nama-kategori" class="form-control">
+					</div>
+					<div class="form-group">
+						<label for="edit-keterangan">Keterangan</label>
+						<input type="text" name="keterangan" id="edit-keterangan" class="form-control">
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					<button type="submit" class="btn btn-primary">Update</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+
 <script>
+	$(document).on('click', '.update', function () {
+		var id_kategori = $(this).data('id');
+
+		$.ajax({
+			url: "<?php echo site_url('admin/get_kategori_by_id'); ?>",
+			type: "POST",
+			data: {id_kategori: id_kategori},
+			dataType: "json",
+			success: function (data) {
+				// Populate modal fields
+				$('#edit-id-kategori').val(data.id_kategori);
+				$('#edit-nama-kategori').val(data.nama_kategori);
+				$('#edit-keterangan').val(data.keterangan);
+			}
+		});
+	})
+
 	$(document).ready(function () {
 		var dataTable = $('#kategori_produk').DataTable({
 			"processing": true,
