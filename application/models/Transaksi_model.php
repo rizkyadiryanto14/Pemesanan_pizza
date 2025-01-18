@@ -11,6 +11,7 @@ class Transaksi_model extends CI_Model
 		return $this->db->insert('transaksi', $data);
 	}
 
+
 	public function getByIdTransaksi($id_transaksi)
 	{
 		return $this->db->get_where('transaksi', ['id_transaksi' => $id_transaksi])->row_array();

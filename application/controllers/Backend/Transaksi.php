@@ -119,20 +119,40 @@ class Transaksi extends CI_Controller
 				// ini untuk Status transaksi
 				if ($row->status == 3) {
 					$sub_array[] = '<span class="btn btn-danger btn-xs">Belum Diverifikasi</span>';
+					if ($this->session->userdata('role') == 1) {
+						$sub_array[] = '<a href="' . site_url('admin/update_status_sedang/' . $row->id_transaksi) . '"  onclick="return confirm(\'Apakah anda yakin?\')"  class="btn btn-info btn-xs update">Sedang Ditinjau</a>
+                          <a href="' . site_url('admin/update_status_sudah/' . $row->id_transaksi) . '" onclick="return confirm(\'Apakah anda yakin?\')" class="btn btn-danger btn-xs delete">Sudah Diverifikasi</a>';
+					} else {
+						$sub_array[] = '<span class="btn btn-secondary btn-xs disabled">Belum Diverifikasi</span>';
+					}
 				} elseif ($row->status == 2) {
-					$sub_array[] = '<span class="btn btn-warning btn-xs">Sedang Ditinjau</span>';
+					if ($this->session->userdata('role') == 1) {
+						$sub_array[] = '<a href="' . site_url('admin/update_status_sudah/' . $row->id_transaksi) . '" onclick="return confirm(\'Apakah anda yakin?\')" class="btn btn-success btn-xs delete">Sudah Diverifikasi</a>';
+					} else {
+						$sub_array[] = '<span class="btn btn-success btn-xs">Sedang Ditinjau</span>';
+					}
 				} elseif ($row->status == 1) {
-					$sub_array[] = '<span class="btn btn-success btn-xs">Sudah Diverifikasi</span>';
+					$sub_array[] = '<span class="btn btn-success btn-xs"><i class="fas fa-check"></i> Sudah Diverifikasi</span>';
 				}
 
 				// sedangkan ini untuk Status pesanan
 				if ($row->status_pesanan == 0) {
-					$sub_array[] = '<span class="btn btn-warning btn-xs">Sedang Diproses</span>';
-				} elseif ($row->status_pesanan == 1) {
-					$sub_array[] = '<span class="btn btn-primary btn-xs">Dalam Proses Pengantaran</span>';
+					if ($this->session->userdata('role') == 1) {
+						$sub_array[] = '<a href="' . site_url('admin/update_status_pesanan_dibuat/' . $row->id_transaksi) . '"  onclick="return confirm(\'Apakah anda yakin?\')"  class="btn btn-info btn-xs update">Sedang Dibuat</a>
+                          <a href="' . site_url('admin/update_status_pesanan_diantar/' . $row->id_transaksi) . '" onclick="return confirm(\'Apakah anda yakin?\')" class="btn btn-danger btn-xs delete">Dalam Pengantaran</a>';
+					} else {
+						$sub_array[] = '<span class="btn btn-secondary btn-xs disabled">Tidak dapat mengubah status pesanan</span>';
+					}
 				} elseif ($row->status_pesanan == 2) {
+					if ($this->session->userdata('role') == 1) {
+						$sub_array[] = '<a href="' . site_url('admin/update_status_pesanan_diantar/' . $row->id_transaksi) . '" onclick="return confirm(\'Apakah anda yakin?\')" class="btn btn-warning btn-xs delete">Dalam Pengantaran</a>';
+					} else {
+						$sub_array[] = '<span class="btn btn-warning btn-xs">Dalam Pengantaran</span>';
+					}
+				} elseif ($row->status_pesanan == 1) {
 					$sub_array[] = '<span class="btn btn-success btn-xs">Selesai</span>';
 				}
+
 
 				// Tambahkan kolom ulasan
 				if ($this->session->userdata('role') == 2) {

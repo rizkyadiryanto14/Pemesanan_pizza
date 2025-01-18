@@ -82,6 +82,7 @@ class BahanBaku extends CI_Controller
 	/**
 	 * @return void
 	 */
+
 	public function get_data_bahanbaku(): void
 	{
 		$fetch_data = $this->BahanBaku_model->make_datatables();
