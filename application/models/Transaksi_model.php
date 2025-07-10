@@ -98,4 +98,10 @@ class Transaksi_model extends CI_Model
 		return $this->db->count_all_results();
 	}
 
+	public function delete_data($id)
+	{
+		$this->db->where('id_transaksi', $id);
+		return $this->db->delete('transaksi');
+	}
+
 }

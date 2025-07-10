@@ -153,8 +153,6 @@ class Transaksi extends CI_Controller
 					$sub_array[] = '<span class="btn btn-success btn-xs">Selesai</span>';
 				}
 
-
-				// Tambahkan kolom ulasan
 				if ($this->session->userdata('role') == 2) {
 					if ($row->status_pesanan == 1) {
 						$review_exists = $this->Transaksi_model->check_review_exists($row->id_transaksi, $this->session->userdata('id_users'));
@@ -181,7 +179,7 @@ class Transaksi extends CI_Controller
 
 				if ($this->session->userdata('role') == 1) {
 					$sub_array[] = '<a href="' . site_url('#' . $row->id_transaksi) . '" class="btn btn-info btn-xs update"><i class="fa fa-edit"></i></a>
-            <a href="' . site_url('#' . $row->id_transaksi) . '" onclick="return confirm(\'Apakah anda yakin?\')" class="btn btn-danger btn-xs delete"><i class="fa fa-trash"></i></a>';
+            <a href="' . site_url('admin/delete_transaksi/' . $row->id_transaksi) . '" onclick="return confirm(\'Apakah anda yakin?\')" class="btn btn-danger btn-xs delete"><i class="fa fa-trash"></i></a>';
 				}
 
 				$data[] = $sub_array;
@@ -296,6 +294,18 @@ class Transaksi extends CI_Controller
 			redirect(base_url('admin/list_transaksi'));
 		}else {
 			$this->session->set_flashdata('error', 'Data Tidak Ditemukan');
+		}
+		redirect(base_url('admin/list_transaksi'));
+	}
+
+	public function delete($id)
+	{
+		$delete = $this->Transaksi_model->delete_data($id);
+
+		if ($delete) {
+			$this->session->set_flashdata('success', 'Data berhasil dihapus');
+		}else{
+			$this->session->set_flashdata('error', 'Data gagal dihapus');
 		}
 		redirect(base_url('admin/list_transaksi'));
 	}
