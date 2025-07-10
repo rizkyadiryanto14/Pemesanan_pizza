@@ -65,6 +65,9 @@ $route['admin/list_produk'] 						= 'Backend/Produk';
 $route['admin/tambah_produk'] 						= 'Backend/Produk/insert';
 $route['admin/get_data_produk'] 					= 'Backend/Produk/get_data_produk';
 $route['admin/store_produk'] 						= 'Backend/Produk/store';
+$route['admin/edit_produk/(:num)'] 					= 'Backend/Produk/edit/$1';
+$route['admin/update_produk/(:num)'] 				= 'Backend/Produk/update/$1';
+$route['admin/delete_produk/(:num)'] 				= 'Backend/Produk/delete/$1';
 
 //admin-bahan baku
 $route['admin/list_bahan']							= 'Backend/BahanBaku';
@@ -89,6 +92,7 @@ $route['admin/update_status_sedang/(:num)']			= 'Backend/Transaksi/update_status
 $route['admin/update_status_sudah/(:num)']			= 'Backend/Transaksi/update_status_sudah/$1';
 $route['admin/update_status_pesanan_dibuat/(:num)'] = 'Backend/Transaksi/update_status_pesanan_dibuat/$1';
 $route['admin/update_status_pesanan_diantar/(:num)']= 'Backend/Transaksi/update_status_pesanan_diantar/$1';
+$route['admin/delete_transaksi/(:num)']				= 'Backend/Transaksi/delete/$1';
 
 //user-pesanan
 $route['user/pesanan']								= 'Backend/Pesanan';

@@ -5,6 +5,8 @@
  * @property $BahanBaku_model
  * @property $Kategori_model
  * @property $upload
+ * @property $load
+ * @property $input
  */
 
 class Produk extends CI_Controller
@@ -43,7 +45,7 @@ class Produk extends CI_Controller
 
 		$config['upload_path'] = './uploads/produk/';
 		$config['allowed_types'] = 'jpg|jpeg|png|pdf|doc|docx|xls|xlsx|txt';
-		$config['max_size'] = 8192; // Maksimal 8 MB
+		$config['max_size'] = 8192;
 		$config['encrypt_name'] = TRUE;
 
 		$this->load->library('upload', $config);
@@ -90,6 +92,87 @@ class Produk extends CI_Controller
 		redirect(base_url('admin/list_produk'));
 	}
 
+	/**
+	 * @param int $id ID Produk yang akan diupdate
+	 * @return void
+	 */
+	public function update(int $id): void
+	{
+		$old_product = $this->Produk_model->getOneById($id);
+		if (!$old_product) {
+			$this->session->set_flashdata('error', 'Data produk tidak ditemukan.');
+			redirect(base_url('admin/list_produk'));
+			return;
+		}
+
+		$data = [
+			'nama_produk' => $this->input->post('nama_produk'),
+			'keterangan_produk' => $this->input->post('keterangan_produk'),
+			'id_bahan_baku'    => $this->input->post('id_bahan_baku'),
+			'id_kategori_produk'   => $this->input->post('id_kategori'),
+			'stok'=> $this->input->post('stok'),
+			'harga' => $this->input->post('harga'),
+		];
+
+		if (!empty($_FILES['gambar_produk']['name'])) {
+			$config['upload_path']   = './uploads/produk/';
+			$config['allowed_types'] = 'jpg|jpeg|png';
+			$config['max_size']      = 8192;
+			$config['encrypt_name']  = TRUE;
+
+			$this->load->library('upload', $config);
+
+			if ($this->upload->do_upload('gambar_produk')) {
+				if (file_exists($old_product['gambar_produk'])) {
+					unlink($old_product['gambar_produk']);
+				}
+
+				$fileData = $this->upload->data();
+				$data['gambar_produk'] = 'uploads/produk/' . $fileData['file_name'];
+			} else {
+				$this->session->set_flashdata('error', 'Gagal mengunggah file: ' . $this->upload->display_errors('', ''));
+				redirect(base_url('admin/produk/edit/' . $id));
+				return;
+			}
+		}
+
+		$new_bahan_id = $this->input->post('id_bahan_baku');
+		$old_bahan_id = $old_product['id_bahan_baku'];
+
+		if ($new_bahan_id != $old_bahan_id) {
+			$bahan_lama = $this->Produk_model->listing_bahan_baku_id($old_bahan_id);
+			$stok_bahan_lama = $bahan_lama['stok_bahan'] + 1;
+			$this->BahanBaku_model->update_data($old_bahan_id, ['stok_bahan' => $stok_bahan_lama]);
+
+			$bahan_baru = $this->Produk_model->listing_bahan_baku_id($new_bahan_id);
+			if ($bahan_baru['stok_bahan'] <= 0) {
+				$this->session->set_flashdata('error', 'Stok bahan baku baru tidak cukup.');
+				redirect(base_url('admin/produk/edit/' . $id));
+				return;
+			}
+			$stok_bahan_baru = $bahan_baru['stok_bahan'] - 1;
+			$this->BahanBaku_model->update_data($new_bahan_id, ['stok_bahan' => $stok_bahan_baru]);
+		}
+
+		$update = $this->Produk_model->update($id, $data);
+
+		if ($update) {
+			$this->session->set_flashdata('success', 'Data berhasil diupdate');
+		} else {
+			$this->session->set_flashdata('error', 'Data gagal diupdate');
+		}
+		redirect(base_url('admin/list_produk'));
+	}
+
+
+	public function edit($id)
+	{
+		$data['bahan_baku']	= $this->Produk_model->listing_bahan_baku();
+		$data['kategori']	= $this->Kategori_model->get();
+		$data['data_produk'] = $this->Produk_model->getOneById($id);
+		$this->load->view('backend/produk/edit_produk', $data);
+	}
+
 	public function get_data_produk(): void
 	{
 		$fetch_data = $this->Produk_model->make_datatables();
@@ -109,8 +192,8 @@ class Produk extends CI_Controller
 				$sub_array[] = $row->harga;
 				$sub_array[] = $row->keterangan_produk;
 				$sub_array[] = longdate_indo($row->created_at);
-				$sub_array[] = '<a href="' . site_url('#' . $row->id_produk) . '" class="btn btn-info btn-xs update"><i class="fa fa-edit"></i></a>
-                     <a href="' . site_url('#' . $row->id_produk) . '" onclick="return confirm(\'Apakah anda yakin?\')" class="btn btn-danger btn-xs delete"><i class="fa fa-trash"></i></a>';
+				$sub_array[] = '<a href="' . site_url('admin/edit_produk/' . $row->id_produk) . '" class="btn btn-info btn-xs update"><i class="fa fa-edit"></i></a>
+                     <a href="' . site_url('admin/delete_produk/' . $row->id_produk) . '" onclick="return confirm(\'Apakah anda yakin?\')" class="btn btn-danger btn-xs delete"><i class="fa fa-trash"></i></a>';
 				$data[] = $sub_array;
 			}
 
@@ -124,5 +207,18 @@ class Produk extends CI_Controller
 		} else {
 			echo "Error: Fetch data is not an array.";
 		}
+	}
+
+
+	public function delete($id)
+	{
+		$delete = $this->Produk_model->delete_data($id);
+
+		if ($delete) {
+			$this->session->set_flashdata('success', 'Data berhasil dihapus');
+		}else {
+			$this->session->set_flashdata('error', 'Data gagal dihapus');
+		}
+		redirect(base_url('admin/list_produk'));
 	}
 }

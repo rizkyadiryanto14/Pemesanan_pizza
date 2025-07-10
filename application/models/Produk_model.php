@@ -33,6 +33,17 @@ class Produk_model extends CI_Model
 		return $this->db->update('produk', $data);
 	}
 
+	public function delete_data($id)
+	{
+		$this->db->where('id_produk', $id);
+		$this->db->delete('reviews');
+
+		$this->db->where('id_produk', $id);
+		$this->db->delete('transaksi');
+
+		$this->db->where('id_produk', $id);
+		return $this->db->delete('produk');
+	}
 
 	function make_query():void
 	{
